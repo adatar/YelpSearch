@@ -1,37 +1,32 @@
-package resourceloader;
+package com.adatar.resourceloader;
 
+import com.adatar.resourceloader.dtos.BookDto;
 import org.springframework.beans.factory.annotation.Value;
-import resourceloader.dtos.BookDto;
-
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BooksFileLoader implements Loadable{
 
-    private static BooksFileLoader ourInstance = new BooksFileLoader();
+    @Value("${bookFilePath}")
+    private String bookFilePath;
+
     private HashMap<String, BookDto> books;
 
-    private String bookFilePath = "/tmp/books.csv";
-
-    public static BooksFileLoader getInstance() {
-        return ourInstance;
-    }
-
-    private BooksFileLoader() {
+    public BooksFileLoader() {
         books = new HashMap<String, BookDto>();
-        load();
     }
 
+    @PostConstruct
     public void load() {
-
         try {
+            System.out.println(bookFilePath);
             ArrayList<String> fileLines = TextFileLoader.readFile(bookFilePath);
             createBookMap(fileLines);
         }
         catch (Exception e){
             System.out.println("File not found");
         }
-
     }
 
     private void createBookMap(ArrayList<String> fileLines){
@@ -45,16 +40,15 @@ public class BooksFileLoader implements Loadable{
             book.setISBN(bookAttributes[0].replace("\"",""));
             book.setTitle(bookAttributes[1].replace("\"",""));
             book.setAuthor(bookAttributes[2].replace("\"",""));
-            book.setYearOfPublication(Integer.parseInt(bookAttributes[3].replace("\"","")));
+            book.setYear(Integer.parseInt(bookAttributes[3].replace("\"","")));
             book.setPublisher(bookAttributes[4].replace("\"",""));
-            book.setImageUrl_S(bookAttributes[5].replace("\"",""));
-            book.setImageUrl_M(bookAttributes[6].replace("\"",""));
-            book.setImageUrl_L(bookAttributes[7].replace("\"",""));
+            book.setImage_s(bookAttributes[5].replace("\"",""));
+            book.setImage_m(bookAttributes[6].replace("\"",""));
+            book.setImage_l(bookAttributes[7].replace("\"",""));
 
             books.put(book.getISBN(), book);
 
         }
-
     }
 
     public BookDto getBook(String isbn) {
