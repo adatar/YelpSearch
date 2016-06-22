@@ -1,26 +1,29 @@
 package com.adatar.requesthandler;
 
+import com.adatar.service.BookService;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.adatar.resourceloader.BooksFileLoader;
 import com.adatar.resourceloader.dtos.BookDto;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 class SearchRequestHandler {
 
     @Autowired
-    BooksFileLoader booksFileLoader;
+    private BookService bookService;
 
-    @RequestMapping("/book/isbn/{isbn}")
-    public BookDto getBook(@PathVariable String isbn){
+    @RequestMapping(value = "/book/isbn/{isbn}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getBook(@PathVariable String isbn){
 
-        return booksFileLoader.getBook(isbn);
-
+        return bookService.serviceRequest(isbn);
     }
 
-    @RequestMapping("/book/default")
+    @RequestMapping(value = "/book/default", produces = MediaType.APPLICATION_JSON_VALUE)
     public BookDto getBook(){
 
         BookDto book = new BookDto();

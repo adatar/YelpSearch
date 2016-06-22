@@ -13,6 +13,10 @@
           p:location="classpath:search.properties"/>
 
     <bean class="com.adatar.resourceloader.BooksFileLoader"/>
+    <bean class="com.adatar.service.BookService">
+        <constructor-arg ref="memcached"/>
+    </bean>
+    <bean id="memcached" class="com.adatar.cache.MemcachedComponent"/>
 
 </beans>
 
